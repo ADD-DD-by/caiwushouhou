@@ -204,39 +204,81 @@ if uploaded_files:
             all_results.append(df[["order_id", "平台sku", "reason", "platform", "platform_refund_reason", "source_file"]])
             continue
 
-        # ========== 第七类：VC退款核查 ==========
-        if "vc退款核查" in filename:
-            xls = pd.ExcelFile(file)
+# ========== 第七类：VC退款核查 ==========
+if "vc退款核查" in filename:
+    xls = pd.ExcelFile(file)
 
-            # Orders sheet
-            if "Orders下退款" in xls.sheet_names:
-                df = pd.read_excel(xls, "Orders下退款")
-                rename_safe(df, "SKU", "平台sku")
-                rename_safe(df, "Order ID", "order_id")
-                rename_safe(df, "Return Reason", "reason")
+    # ===== 映射：你截图提供的 Reason Code =====
+    vc_reason_mapping = {
+        "A": "Carrier Damaged",
+        "C": "Customer Damaged",
+        "D": "Defective",
+        "E": "Expired",
+        "G": "Graded",
+        "O": "Overstock",
+        "V": "Vendor Damaged",
+        "W": "Warehouse Damaged",
+        "X": "Mixed Damaged"
+    }
 
-                df["order_id"] = normalize_order_id(df["order_id"])
-                df["platform"] = "VC"
-                df["platform_refund_reason"] = df["platform"] + df["reason"].astype(str)
-                df["source_file"] = filename + "_orders"
+    # --- 1) Orders下退款 ---
+    if "Orders下退款" in xls.sheet_names:
+        df = pd.read_excel(xls, "Orders下退款")
+        rename_safe(df, "SKU", "平台sku")
+        rename_safe(df, "Order ID", "order_id")
+        rename_safe(df, "Return Reason", "reason")
 
-                all_results.append(df[["order_id", "平台sku", "reason", "platform", "platform_refund_reason", "source_file"]])
+        df["order_id"] = normalize_order_id(df["order_id"])
+        df["platform"] = "VC"
+        df["platform_refund_reason"] = df["platform"] + df["reason"].astype(str)
+        df["source_file"] = filename + "_orders"
 
-            # Payments sheet
-            if "Payments下退款" in xls.sheet_names:
-                df2 = pd.read_excel(xls, "Payments下退款")
-                rename_safe(df2, "Reason", "reason")
-                rename_safe(df2, "Distributor Shipment Id", "order_id")
+        all_results.append(df[["order_id", "平台sku", "reason", "platform", "platform_refund_reason", "source_file"]])
 
-                df2["order_id"] = normalize_order_id(df2["order_id"])
-                df2["平台sku"] = None
-                df2["platform"] = "VC"
-                df2["platform_refund_reason"] = df2["platform"] + df2["reason"].astype(str)
-                df2["source_file"] = filename + "_payments"
+    # --- 2) Payments下退款 ---
+    if "Payments下退款" in xls.sheet_names:
+        df2 = pd.read_excel(xls, "Payments下退款")
+        rename_safe(df2, "Reason", "reason")
+        rename_safe(df2, "Distributor Shipment Id", "order_id")
 
-                all_results.append(df2[["order_id", "平台sku", "reason", "platform", "platform_refund_reason", "source_file"]])
+        df2["order_id"] = normalize_order_id(df2["order_id"])
+        df2["平台sku"] = None
+        df2["platform"] = "VC"
+        df2["platform_refund_reason"] = df2["platform"] + df2["reason"].astype(str)
+        df2["source_file"] = filename + "_payments"
 
-            continue
+        all_results.append(df2[["order_id", "平台sku", "reason", "platform", "platform_refund_reason", "source_file"]])
+
+    # --- 3) 其他下载Returns Detail-1 ---
+    if "其他下载Returns Detail-1" in xls.sheet_names:
+        df3 = pd.read_excel(xls, "其他下载Returns Detail-1")
+        rename_safe(df3, "Return ID", "order_id")
+        rename_safe(df3, "Reason Code", "reason")
+
+        df3["order_id"] = normalize_order_id(df3["order_id"])
+        df3["reason"] = df3["reason"].astype(str).map(vc_reason_mapping)
+        df3["平台sku"] = None
+        df3["platform"] = "VC"
+        df3["platform_refund_reason"] = df3["platform"] + df3["reason"]
+        df3["source_file"] = filename + "_detail1"
+
+        all_results.append(df3[["order_id", "平台sku", "reason", "platform", "platform_refund_reason", "source_file"]])
+
+    # --- 4) 其他下载Returns Detail-2 ---
+    if "其他下载Returns Detail-2" in xls.sheet_names:
+        df4 = pd.read_excel(xls, "其他下载Returns Detail-2")
+        rename_safe(df4, "Return ID", "order_id")
+        rename_safe(df4, "Reason Code Desc", "reason")
+
+        df4["order_id"] = normalize_order_id(df4["order_id"])
+        df4["平台sku"] = None
+        df4["platform"] = "VC"
+        df4["platform_refund_reason"] = df4["platform"] + df4["reason"]
+        df4["source_file"] = filename + "_detail2"
+
+        all_results.append(df4[["order_id", "平台sku", "reason", "platform", "platform_refund_reason", "source_file"]])
+
+    continue
 
         # ========== 第八类：Walmart后台退款表 ==========
         if "walmart后台退款表" in filename:
