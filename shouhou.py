@@ -326,6 +326,6 @@ if all_results:
     st.download_button(
         "⬇️ 下载合并后的大表（Excel）",
         data=buffer,
-        file_name="refund_merged_cleaned_v3.xlsx",
+        file_name="refund_merged_cleaned.xlsx",
         mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     )
