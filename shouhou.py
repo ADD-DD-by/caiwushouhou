@@ -315,7 +315,7 @@ if uploaded_files:
 # ========== 合并输出 ==========
 if all_results:
     final_df = pd.concat(all_results, ignore_index=True)
-
+    final_df = final_df.drop_duplicates()
     st.subheader("🎉 清洗完成！预览前 20 行：")
     st.dataframe(final_df.head(20))
 
