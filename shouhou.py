@@ -135,7 +135,7 @@ if uploaded_files:
             continue
 
         # ========== 第二类：Amazont退货报告 ==========
-        if "amazont退货报告" in filename:
+        if "amazon退货报告" in filename:
             df = pd.read_excel(file)
             rename_safe(df, "merchant_sku", "平台sku")
             rename_safe(df, "return_reason", "reason")
@@ -148,7 +148,7 @@ if uploaded_files:
             continue
 
         # ========== 第三类：Amazon后台换货 ==========
-        if "平台amazon后台换货表" in filename:
+        if "amazon后台换货表" in filename:
             df = pd.read_excel(file)
             rename_safe(df, "sku", "平台sku")
             df["reason"] = safe_get(df, "replacement-reason-code").astype(str).map(amazon_exchange_reason)
