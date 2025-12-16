@@ -138,7 +138,7 @@ if uploaded_files:
         if "amazon退货报告" in filename:
             df = pd.read_excel(file)
             rename_safe(df, "merchant_sku", "平台sku")
-            rename_safe(df, "return_reason_code", "reason")
+            rename_safe(df, "return_reason", "reason")
             rename_safe(df, "order_id", "order_id")
             df["order_id"] = normalize_order_id(df["order_id"])
             df["platform"] = "Amazon"
