@@ -304,7 +304,7 @@ if uploaded_files:
             po_col = [c for c in df.columns if "po" in c.lower()][0]
             df["order_id"] = normalize_order_id(df[po_col])
 
-            df["platform"] = "Walmart"
+            df["platform"] = "wayfair"
             df["platform_refund_reason"] = df["platform"] + df["reason"].astype(str)
             df["source_file"] = filename
 
