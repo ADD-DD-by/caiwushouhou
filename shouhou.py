@@ -136,7 +136,7 @@ if uploaded_files:
 
         # ========== 第二类：Amazont退货报告 ==========
         if "amazon退货报告" in filename.lower():
-            df = pd.read_excel(xls,"IT导出")
+            df = pd.read_excel(xls,sheet_name="IT导出")
             rename_safe(df, "merchant_sku", "平台sku")
             rename_safe(df, "return_reason", "reason")
             rename_safe(df, "order_id", "order_id")
