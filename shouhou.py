@@ -123,7 +123,7 @@ if uploaded_files:
         filename = file.name.lower()
 
         # ========== 第一类：Amazon买家退货 ==========
-        if "amazon买家退货" in filename:
+        if "amazon买家退货" in filename.lower():
             df = pd.read_excel(file)
             df["order_id"] = normalize_order_id(safe_get(df, "order-id"))
             df["平台sku"] = safe_get(df, "平台sku")
@@ -135,7 +135,7 @@ if uploaded_files:
             continue
 
         # ========== 第二类：Amazont退货报告 ==========
-        if "amazon退货报告" in filename:
+        if "amazon退货报告" in filename.lower():
             df = pd.read_excel(file)
             rename_safe(df, "merchant_sku", "平台sku")
             rename_safe(df, "return_reason", "reason")
@@ -148,7 +148,7 @@ if uploaded_files:
             continue
 
         # ========== 第三类：Amazon后台换货 ==========
-        if "amazon后台换货表" in filename:
+        if "amazon后台换货表" in filename.lower():
             df = pd.read_excel(file)
             rename_safe(df, "sku", "平台sku")
             df["reason"] = safe_get(df, "replacement-reason-code").astype(str).map(amazon_exchange_reason)
@@ -160,7 +160,7 @@ if uploaded_files:
             continue
 
         # ========== 第四类：Overstock后台退货单 ==========
-        if "overstock后台退货单" in filename:
+        if "overstock后台退货单" in filename.lower():
             df = pd.read_excel(file)
             rename_safe(df, "Return Reason Description", "reason")
             rename_safe(df, "Partner SKU", "平台sku")
@@ -173,7 +173,7 @@ if uploaded_files:
             continue
 
         # ========== 第五类：TEMU后台退款表 ==========
-        if "temu后台退款表" in filename:
+        if "temu后台退款表" in filename.lower():
             df = pd.read_excel(file)
             rename_safe(df, "售后原因", "reason")
             rename_safe(df, "订单编号", "order_id")
@@ -190,7 +190,7 @@ if uploaded_files:
             continue
 
         # ========== 第六类：Tiktok后台退款表 ==========
-        if "tiktok后台退款表" in filename:
+        if "tiktok后台退款表" in filename.lower():
             df = pd.read_excel(file)
             rename_safe(df, "Order ID", "order_id")
             rename_safe(df, "Seller SKU", "平台sku")
@@ -205,7 +205,7 @@ if uploaded_files:
             continue
 
         # ========== 第七类：VC退款核查 ==========
-        if "vc退款核查" in filename:
+        if "vc退款核查" in filename.lower():
             xls = pd.ExcelFile(file)
         
             # ===== 映射：你截图提供的 Reason Code =====
@@ -281,7 +281,7 @@ if uploaded_files:
             continue
 
         # ========== 第八类：Walmart后台退款表 ==========
-        if "walmart后台退款表" in filename:
+        if "walmart后台退款表" in filename.lower():
             df = pd.read_excel(file)
             rename_safe(df, "RETURN_REASON", "reason")
             rename_safe(df, "CUSTOMER_ORDER_NO", "order_id")
@@ -296,7 +296,7 @@ if uploaded_files:
             continue
 
         # ========== 第九类：Wayfair后台退款表 ==========
-        if "wayfair后台退款表" in filename:
+        if "wayfair后台退款表" in filename.lower():
             df = pd.read_excel(file)
             rename_safe(df, "原因", "reason")
             rename_safe(df, "SKU", "平台sku")
